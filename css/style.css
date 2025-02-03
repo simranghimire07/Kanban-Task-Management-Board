@@ -46,12 +46,12 @@ button:is(:active, :hover) {
         color: var(--primary-color);
 }
       
-.column-title h3 {
+.column-title h2 {
         font-size: 1rem;
         text-transform: uppercase;
 }
       
- .column-title h3::after {
+ .column-title h2::after {
         content: attr(data-tasks);
         background: lightblue;
         margin-left: 0.25rem;
@@ -121,7 +121,7 @@ button:is(:active, :hover) {
       
 .task-input::before {
         content: "\F392";
-        font-family: "bootstrap-icons";
+        font-family: sans-serif;
         position: absolute;
         left: 0.875rem;
         top: 50%;

@@ -1,175 +1,127 @@
-const modal = document.querySelector(".confirm-modal");
-const columnsContainer = document.querySelector(".columns");
-const columns = columnsContainer.querySelectorAll(".column");
+import { saveTasks, loadTasks, handleDragstart, handleDragend, handleDragover, handleDrop } from './api.js';
 
-let currentTask = null;
+document.addEventListener("DOMContentLoaded", () => {
+    const columns = document.querySelectorAll('.column');
+    const modal = document.querySelector(".confirm-modal");
 
-const handleDragover = (event) => {
-  event.preventDefault(); 
+    loadTasks(columns);
 
-  const draggedTask = document.querySelector(".dragging");
-  const target = event.target.closest(".task, .tasks");
+    columns.forEach(column => {
+        const addButton = column.querySelector("[data-add]");
+        addButton.addEventListener("click", () => addTask(column));
+        column.querySelector(".tasks").addEventListener("dragover", handleDragover);
+        column.querySelector(".tasks").addEventListener("drop", handleDrop);
+        column.querySelector(".tasks").addEventListener("dragend", handleTaskMove);
+    });
 
-  if (!target || target === draggedTask) return;
+    modal.querySelector("#cancel").addEventListener("click", () => modal.close());
+    modal.addEventListener("submit", handleDeleteTask);
 
-  if (target.classList.contains("tasks")) {
-    const lastTask = target.lastElementChild;
-    if (!lastTask) {
-      target.appendChild(draggedTask);
-    } else {
-      const { bottom } = lastTask.getBoundingClientRect();
-      event.clientY > bottom && target.appendChild(draggedTask);
+    window.addEventListener("beforeunload", () => saveTasks(columns));
+});
+
+const addTask = (column) => {
+    const newTaskData = {
+        id: `TASK-${Date.now()}`,
+        title: "",
+        description: "",
+        dueDate: "",
+        status: column.dataset.status,
+        priority: "Low",
+        assignee: "",
+        createdAt: new Date().toISOString(),
+    };
+
+    const taskElement = createTask(newTaskData);
+    column.querySelector(".tasks").appendChild(taskElement);
+    updateTaskCount(column);
+    saveTasks(document.querySelectorAll(".column"));
+};
+
+const createTask = (taskData) => {
+    const task = document.createElement("div");
+    task.className = "task";
+    task.id = taskData.id;
+    task.draggable = true;
+    task.dataset.status = taskData.status;
+    task.dataset.createdAt = taskData.createdAt;
+
+    task.innerHTML = `
+        <div class="task-title">
+            <input type="text" value="${taskData.title}" placeholder="Enter task title" />
+        </div>
+        <div class="task-details">
+            <textarea placeholder="Enter description">${taskData.description}</textarea>
+            <input type="date" value="${taskData.dueDate}" />
+            <select>
+                <option value="Low" ${taskData.priority === "Low" ? "selected" : ""}>Low</option>
+                <option value="Medium" ${taskData.priority === "Medium" ? "selected" : ""}>Medium</option>
+                <option value="High" ${taskData.priority === "High" ? "selected" : ""}>High</option>
+            </select>
+            <input type="text" value="${taskData.assignee}" placeholder="Enter assignee" />
+        </div>
+        <menu>
+            <button data-edit><i class="bi bi-pencil-square"></i></button>
+            <button data-delete><i class="bi bi-trash"></i></button>
+        </menu>
+    `;
+
+    task.addEventListener("dragstart", handleDragstart);
+    task.addEventListener("dragend", handleDragend);
+    task.querySelector("[data-edit]").addEventListener("click", () => editTask(task));
+    task.querySelector("[data-delete]").addEventListener("click", () => confirmDelete(task));
+
+    return task;
+};
+
+const confirmDelete = (task) => {
+    const modal = document.querySelector(".confirm-modal");
+    const preview = modal.querySelector(".preview");
+    preview.innerText = task.querySelector(".task-title input").value; 
+
+    const confirmButton = modal.querySelector("#confirm");
+    confirmButton.dataset.taskId = task.id; 
+
+    modal.showModal();
+};
+
+const handleDeleteTask = (event) => {
+    event.preventDefault();
+
+    const modal = document.querySelector(".confirm-modal");
+    const confirmButton = modal.querySelector("#confirm");
+    const taskId = confirmButton.dataset.taskId; 
+
+    const taskToDelete = document.getElementById(taskId);
+    if (taskToDelete) {
+        const column = taskToDelete.closest('.column'); 
+        taskToDelete.remove();
+        updateTaskCount(column);
+        removeTask(taskId);
     }
-  } else {
-    const { top, height } = target.getBoundingClientRect();
-    const distance = top + height / 2;
 
-    if (event.clientY < distance) {
-      target.before(draggedTask);
-    } else {
-      target.after(draggedTask);
-    }
-  }
+    modal.close();
 };
 
-const handleDrop = (event) => {
-  event.preventDefault();
-};
-
-const handleDragend = (event) => {
-  event.target.classList.remove("dragging");
-};
-
-const handleDragstart = (event) => {
-  event.dataTransfer.effectsAllowed = "move";
-  event.dataTransfer.setData("text/plain", "");
-  requestAnimationFrame(() => event.target.classList.add("dragging"));
-};
-
-const handleDelete = (event) => {
-  currentTask = event.target.closest(".task");
-
-  modal.querySelector(".preview").innerText = currentTask.innerText.substring(
-    0,
-    100
-  );
-
-  modal.showModal();
-};
-
-const handleEdit = (event) => {
-  const task = event.target.closest(".task");
-  const input = createTaskInput(task.innerText);
-  task.replaceWith(input);
-  input.focus();
-
-  const selection = window.getSelection();
-  selection.selectAllChildren(input);
-  selection.collapseToEnd();
-};
-
-const handleBlur = (event) => {
-  const input = event.target;
-  const content = input.innerText.trim() || "Untitled";
-  const task = createTask(content.replace(/\n/g, "<br>"));
-  input.replaceWith(task);
-};
-
-const handleAdd = (event) => {
-  const tasksEl = event.target.closest(".column").lastElementChild;
-  const input = createTaskInput();
-  tasksEl.appendChild(input);
-  input.focus();
+const removeTask = (taskId) => {
+    let tasks = JSON.parse(localStorage.getItem('kanbanTasks')) || [];
+    tasks = tasks.filter(task => task.id !== taskId);
+    localStorage.setItem('kanbanTasks', JSON.stringify(tasks));
 };
 
 const updateTaskCount = (column) => {
-  const tasks = column.querySelector(".tasks").children;
-  const taskCount = tasks.length;
-  column.querySelector(".column-title h3").dataset.tasks = taskCount;
+    const taskCount = column.querySelector(".tasks").children.length;
+    column.querySelector(".column-title h2").dataset.tasks = taskCount;
 };
 
-const observeTaskChanges = () => {
-  for (const column of columns) {
-    const observer = new MutationObserver(() => updateTaskCount(column));
-    observer.observe(column.querySelector(".tasks"), { childList: true });
-  }
+const handleTaskMove = () => {
+    const columns = document.querySelectorAll('.column');
+    columns.forEach(column => {
+        column.querySelectorAll('.task').forEach(task => {
+            task.dataset.status = column.dataset.status;
+        });
+    });
+
+    columns.forEach(updateTaskCount);
+    saveTasks(columns);
 };
-
-observeTaskChanges();
-
-const createTask = (content) => {
-  const task = document.createElement("div");
-  task.className = "task";
-  task.draggable = true;
-  task.innerHTML = `
-  <div>${content}</div>
-  <menu>
-      <button data-edit><i class="bi bi-pencil-square"></i></button>
-      <button data-delete><i class="bi bi-trash"></i></button>
-  </menu>`;
-  task.addEventListener("dragstart", handleDragstart);
-  task.addEventListener("dragend", handleDragend);
-  return task;
-};
-
-const createTaskInput = (text = "") => {
-  const input = document.createElement("div");
-  input.className = "task-input";
-  input.dataset.placeholder = "Task name";
-  input.contentEditable = true;
-  input.innerText = text;
-  input.addEventListener("blur", handleBlur);
-  return input;
-};
-
-tasksElements = columnsContainer.querySelectorAll(".tasks");
-for (const tasksEl of tasksElements) {
-  tasksEl.addEventListener("dragover", handleDragover);
-  tasksEl.addEventListener("drop", handleDrop);
-}
-
-columnsContainer.addEventListener("click", (event) => {
-  if (event.target.closest("button[data-add]")) {
-    handleAdd(event);
-  } else if (event.target.closest("button[data-edit]")) {
-    handleEdit(event);
-  } else if (event.target.closest("button[data-delete]")) {
-    handleDelete(event);
-  }
-});
-
-// confirm
-modal.addEventListener("submit", () => currentTask && currentTask.remove());
-
-// cancel
-modal.querySelector("#cancel").addEventListener("click", () => modal.close());
-
-// clear current task
-modal.addEventListener("close", () => (currentTask = null));
-
-let tasks = [
-  [
-    "Brand and Logo Design ",
-    "Cross-Browser Testing ",
-    "Integrate Livechat ",
-  ],
-  [
-    "Optimize Image Assets ",
-  ],
-  [
-    "Set Up Custom Domain ",
-    "Deploy Website ",
-    "Fix Bugs ",
-    "Team Meeting",
-  ],
-  [
-    "Write Report ",
-    "Code Review ",
-  ],
-];
-
-tasks.forEach((col, idx) => {
-  for (const item of col) {
-    columns[idx].querySelector(".tasks").appendChild(createTask(item));
-  }
-});
