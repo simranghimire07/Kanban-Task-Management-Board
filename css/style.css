@@ -1,7 +1,177 @@
-h1 {
-        margin: 2rem 0;
-      }
+.container{
+        font-family: 'Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif';
+        display: flex;
+        gap: 20px;
+        width: 100%;
+        margin: 0 auto;
+}       
+.sidebar {
+        width: 375px;
+        background: white;
+        padding: 20px;
+        border-right: 1px solid #ddd;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+}
+.sidebar h1, h3 {
+        font-size: 26px;
+        margin: 10px 5px;
+        color: #333;
+}
+
+.project-list, .team {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+}
+
+.project-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        font-weight: 600;
+        font-style: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        height: 55px;
+        cursor: pointer;
+        border: 1px solid #ebe6e6;
+}
+
+.project-name{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+}
+    
+.project-list li.active {
+        background: #365eff;
+        color: white;
+        border: none;
+}
+
+.project-list li.active .project-options {
+        color: white;
+}
+    
+    
+.project-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 5px;
+        padding: 5px;
+}
+    
+.project-list li:nth-child(1) .project-icon {
+        background-color: white;
+}
+    
+.project-list li:nth-child(2) .project-icon {
+        background-color: #e2faff;
+ }
+    
+.project-list li:nth-child(3) .project-icon {
+        background-color: #d9edfe;
+ }
+    
+.project-list li:nth-child(4) .project-icon {
+        background-color: #fce9ff;
+}
+    
+.project-options {
+        color: #666;
+        cursor: pointer;
+        font-size: 14px;
+}
+
+.sidebar h2 {
+        font-size: 26px;
+        margin-top: 60px;
+        margin-bottom: 10px;
+        color: #333;
+}
+
+.team li {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         margin-bottom: 15px;
+         padding: 15px;
+         border: 1px solid #ebe6e6;
+         border-radius: 8px;
+         cursor: pointer;
+         background: #fff;
+}
+.team-members{
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+}
+.team-members.avatar-bg-1 {
+    background-color: #ffbdb7;
+}
+
+.team-members.avatar-bg-2 {
+    background-color: #fed9a5;
+}
+
+.team-members.avatar-bg-3 {
+    background-color: #fee8a8;
+}
+
+.team-members.avatar-bg-4 {
+    background-color: #c3f0c9;
+}
+
+.team-members.avatar-bg-5 {
+    background-color: #dcd1f9;
+}
+
+.team-members img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 8px;
+}
+   
       
+.member-name {
+        flex-grow: 1;
+        margin-left: 10px;
+}
+
+.member-name h3 {
+        font-size: 18px;
+        margin: 0;
+        color: #333;
+}
+      
+.member-name span {
+        font-size: 16px;
+        color: #777;
+        position: relative;
+        padding-left: 15px; 
+}
+.member-name span::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgb(188, 188, 188); 
+}
+    
+.member-name span.online::before {
+        background-color: #4caf50;  
+}
+
 button {
         cursor: pointer;
         border: none;
@@ -15,11 +185,14 @@ button {
 button:is(:active, :hover) {
         opacity: 1;
 }
-      
- .container {
-        width: min(1200px, 90%);
-        margin: 0 auto;
-}
+
+ main{
+        flex-grow: 1;
+        padding: 35px;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+ }
       
 .columns {
         display: flex;
@@ -36,32 +209,60 @@ button:is(:active, :hover) {
         flex: 1;
         display: grid;
         grid-template-rows: var(--task-size) 1fr;
-        gap: 0.5rem;
+        gap: 3.5rem;
+}
+.column-header-section{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 20px;
 }
       
 .column-title {
         display: flex;
         align-items: center;
-        border-bottom: 1px solid var(--secondary-color);
-        color: var(--primary-color);
+        justify-content: space-between;
 }
       
 .column-title h2 {
-        font-size: 1rem;
-        text-transform: uppercase;
+        font-size: 1.3rem;
 }
       
  .column-title h2::after {
         content: attr(data-tasks);
-        background: lightblue;
-        margin-left: 0.25rem;
-        border-radius: 0.25rem;
+        background: #FFFFFF;
+        margin-left: 1rem;
+        border-radius: 40%;
         padding: 0 0.25rem;
+        color: #666;
 }
-      
-.column-title button {
-        margin-left: auto;
-        font-size: 2rem;
+
+.add-btn button {
+        background-color: #fff; 
+        color: blue; 
+        padding: 10px 20px;  
+        border-radius: 10px;  
+        border: none;  
+        font-size: 1.2rem;  
+        font-weight: 600;
+        cursor: pointer; 
+        width: 100%;
+        height: 45px;
+        border: 1px solid #ebe6e6;
+}
+
+input,
+textarea,
+select {
+    all: unset; 
+    width: 100%; 
+}
+
+select {
+    appearance: none; 
+    background: none;
+    border: none; 
+    padding: 0.5rem;
 }
       
 .tasks {
@@ -75,7 +276,6 @@ button:is(:active, :hover) {
         background: #fff;
         border-radius: 0.25rem;
         padding: 0.875rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         position: relative;
         min-height: var(--task-size);
 }
@@ -98,8 +298,46 @@ button:is(:active, :hover) {
       
 .task:not(.dragging):hover {
         background: var(--task-color);
+        /* border: 1px dashed var(--task-color); */
 }
-      
+
+.task .task-title{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+}
+.task .task-title .priority-select{
+        border-radius: 35px;
+        font-size: 18px;
+        font-weight: 500;
+        width: 95px;
+        max-width: 100%;
+        height: 30px;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        align-items: center;
+        margin-bottom: 10px;
+}
+.priority-select-low {
+        background-color: #d4edda;
+        color: #155724;
+}
+    
+.priority-select-medium {
+        background-color: #fff3cd; 
+        color: #856404;
+}
+    
+.priority-select-high {
+        background-color: #f6c5c9;
+        color: #8d222c;
+}
+.task-title .project-options{
+        font-size: 18px;
+}
+   
 .task menu {
         margin-top: 0.875rem;
         display: flex;
@@ -117,23 +355,33 @@ button:is(:active, :hover) {
         outline: none;
         overflow-wrap: anywhere;
         padding-left: 2.5rem;
+        margin-top: 10px;
 }
-      
-.task-input::before {
-        content: "\F392";
-        font-family: sans-serif;
-        position: absolute;
-        left: 0.875rem;
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 0.5;
+
+.task-details input{
+        font-size: 20px;
+        font-weight: 600;
 }
-      
-.task-input:empty::after {
-        content: attr(data-placeholder);
-        opacity: 0.5;
+
+.task-details textarea{
+        font-size: 18px;
+        font-weight: 500;
+        opacity: 0.6;
 }
-      
+
+.divider{
+        opacity: 0.3;
+        width: 100%;
+}
+
+.task-meta{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+}
+input:focus::placeholder {
+        color: transparent;
+}           
 .confirm-modal[open] {
         opacity: 1;
         transform: translate(-50%, -50%) translateY(0);

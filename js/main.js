@@ -38,7 +38,7 @@ const addTask = (column) => {
     saveTasks(document.querySelectorAll(".column"));
 };
 
-const createTask = (taskData) => {
+export const createTask = (taskData) => {
     const task = document.createElement("div");
     task.className = "task";
     task.id = taskData.id;
@@ -109,7 +109,7 @@ const removeTask = (taskId) => {
     localStorage.setItem('kanbanTasks', JSON.stringify(tasks));
 };
 
-const updateTaskCount = (column) => {
+export const updateTaskCount = (column) => {
     const taskCount = column.querySelector(".tasks").children.length;
     column.querySelector(".column-title h2").dataset.tasks = taskCount;
 };

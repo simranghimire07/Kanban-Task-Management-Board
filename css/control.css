@@ -1,5 +1,6 @@
 :root{
-        --bg-color: #e2e8f0;
+        /* --bg-color: #e2e8f0; */
+        --bg-color: #f7f7f7;
         --text-color: #404040;
         --primary-color: #475569;
         --secondary-color: #cbd5e1;
@@ -7,7 +8,7 @@
         --cancel-color: #e5e7eb;
         --confirm-color: #dc2626;
         --confirm-hover-color: #b91c1c;
-        --task-size: 48px;
+        --task-size: 46px;
 }
 
 *{
@@ -22,4 +23,6 @@ body {
         min-height: 100vh;
         display: grid;
         grid-template-rows: auto 1fr;
+        font-family: 'Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif';
+
 }

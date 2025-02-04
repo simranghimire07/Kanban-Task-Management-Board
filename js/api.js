@@ -1,3 +1,4 @@
+import { createTask , updateTaskCount} from './main.js';
 export const saveTasks = (columns) => {
         const tasks = [];
         columns.forEach(column => {
