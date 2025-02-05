@@ -20,6 +20,19 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("beforeunload", () => saveTasks(columns));
 });
 
+const updateSelectColor = (select) => {
+    select.classList.remove("priority-select-low", "priority-select-medium", "priority-select-high");
+
+    if (select.value === "Low") {
+        select.classList.add("priority-select-low");
+    } else if (select.value === "Medium") {
+        select.classList.add("priority-select-medium");
+    } else if (select.value === "High") {
+        select.classList.add("priority-select-high");
+    }
+};
+
+
 const addTask = (column) => {
     const newTaskData = {
         id: `TASK-${Date.now()}`,
@@ -48,16 +61,21 @@ export const createTask = (taskData) => {
 
     task.innerHTML = `
         <div class="task-title">
-            <input type="text" value="${taskData.title}" placeholder="Enter task title" />
-        </div>
-        <div class="task-details">
-            <textarea placeholder="Enter description">${taskData.description}</textarea>
-            <input type="date" value="${taskData.dueDate}" />
-            <select>
+            <select class="priority-select">
                 <option value="Low" ${taskData.priority === "Low" ? "selected" : ""}>Low</option>
                 <option value="Medium" ${taskData.priority === "Medium" ? "selected" : ""}>Medium</option>
                 <option value="High" ${taskData.priority === "High" ? "selected" : ""}>High</option>
             </select>
+            <i class="fas fa-ellipsis-v project-options"></i>
+
+        </div>
+        <div class="task-details">
+            <input type="text" value="${taskData.title}" placeholder="Enter task title" />
+            <textarea placeholder="Enter description">${taskData.description}</textarea>
+        </div>
+        <hr class="divider" />
+        <div class="task-meta">
+            <input type="date" value="${taskData.dueDate}" />
             <input type="text" value="${taskData.assignee}" placeholder="Enter assignee" />
         </div>
         <menu>
@@ -65,6 +83,10 @@ export const createTask = (taskData) => {
             <button data-delete><i class="bi bi-trash"></i></button>
         </menu>
     `;
+
+    const prioritySelect = task.querySelector(".priority-select");
+    updateSelectColor(prioritySelect);
+    prioritySelect.addEventListener("change", () => updateSelectColor(prioritySelect));
 
     task.addEventListener("dragstart", handleDragstart);
     task.addEventListener("dragend", handleDragend);
@@ -104,9 +126,9 @@ const handleDeleteTask = (event) => {
 };
 
 const removeTask = (taskId) => {
-    let tasks = JSON.parse(localStorage.getItem('kanbanTasks')) || [];
+    let tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
     tasks = tasks.filter(task => task.id !== taskId);
-    localStorage.setItem('kanbanTasks', JSON.stringify(tasks));
+    localStorage.setItem('todoTasks', JSON.stringify(tasks));
 };
 
 export const updateTaskCount = (column) => {

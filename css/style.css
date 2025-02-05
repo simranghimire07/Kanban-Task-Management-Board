@@ -307,7 +307,7 @@ select {
         justify-content: space-between;
         gap: 20px;
 }
-.task .task-title .priority-select{
+.task .task-title select{
         border-radius: 35px;
         font-size: 18px;
         font-weight: 500;
@@ -320,7 +320,7 @@ select {
         align-items: center;
         margin-bottom: 10px;
 }
-.priority-select-low {
+/* .priority-select-low {
         background-color: #d4edda;
         color: #155724;
 }
@@ -333,7 +333,7 @@ select {
 .priority-select-high {
         background-color: #f6c5c9;
         color: #8d222c;
-}
+} */
 .task-title .project-options{
         font-size: 18px;
 }
