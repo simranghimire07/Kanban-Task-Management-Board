@@ -221,18 +221,45 @@ button:is(:active, :hover) {
 .column-title {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        /* justify-content: space-between; */
+}
+
+.column-title::before {
+        content: '';
+        display: inline-block;
+        width: 12px;
+        height: 12px; 
+        border-radius: 50%; 
+        margin-right: 10px; 
+}
+    
+.column-title[data-status="todo"]::before {
+        background-color: #fe8076; 
+}
+    
+.column-title[data-status="in-progress"]::before {
+        background-color: #355cf6; 
+}
+    
+.column-title[data-status="review"]::before {
+        background-color: #ffbc39; 
+    }
+    
+.column-title[data-status="done"]::before {
+        background-color: #10be96; 
 }
       
 .column-title h2 {
         font-size: 1.3rem;
+
 }
       
- .column-title h2::after {
+.column-title h2::after {
         content: attr(data-tasks);
         background: #FFFFFF;
         margin-left: 1rem;
-        border-radius: 40%;
+        margin-right: 7.4rem;
+        border-radius: 30%;
         padding: 0 0.25rem;
         color: #666;
 }
@@ -314,13 +341,12 @@ select {
         width: 95px;
         max-width: 100%;
         height: 30px;
-        border: none;
         cursor: pointer;
         text-align: center;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 18px;
 }
-/* .priority-select-low {
+.priority-select-low {
         background-color: #d4edda;
         color: #155724;
 }
@@ -333,7 +359,7 @@ select {
 .priority-select-high {
         background-color: #f6c5c9;
         color: #8d222c;
-} */
+}
 .task-title .project-options{
         font-size: 18px;
 }
@@ -367,6 +393,9 @@ select {
         font-size: 18px;
         font-weight: 500;
         opacity: 0.6;
+}
+.task-details input[type="date"]::-webkit-calendar-picker-indicator {
+        display: none;
 }
 
 .divider{

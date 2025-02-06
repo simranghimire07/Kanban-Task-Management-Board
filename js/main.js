@@ -34,6 +34,19 @@ const updateSelectColor = (select) => {
 
 
 const addTask = (column) => {
+    const tasksContainer = column.querySelector(".tasks");
+
+    const existingBlankTask = [...tasksContainer.children].some(task => {
+        const title = task.querySelector("input[type='text']").value.trim();
+        const description = task.querySelector("textarea").value.trim();
+        return title === "" && description === "";
+    });
+
+    if (existingBlankTask) {
+        alert("Please fill in the existing blank task before adding a new one.");
+        return;
+    }
+
     const newTaskData = {
         id: `TASK-${Date.now()}`,
         title: "",
@@ -46,9 +59,20 @@ const addTask = (column) => {
     };
 
     const taskElement = createTask(newTaskData);
-    column.querySelector(".tasks").appendChild(taskElement);
+    tasksContainer.appendChild(taskElement);
     updateTaskCount(column);
     saveTasks(document.querySelectorAll(".column"));
+};
+
+const editTask = (task) => {
+    const titleInput = task.querySelector(".task-details input[type='text']");
+    const descriptionTextarea = task.querySelector(".task-details textarea");
+    
+    if (titleInput && descriptionTextarea) {
+        titleInput.removeAttribute("readonly");
+        descriptionTextarea.removeAttribute("readonly");
+        titleInput.focus();
+    }
 };
 
 export const createTask = (taskData) => {
@@ -99,7 +123,10 @@ export const createTask = (taskData) => {
 const confirmDelete = (task) => {
     const modal = document.querySelector(".confirm-modal");
     const preview = modal.querySelector(".preview");
-    preview.innerText = task.querySelector(".task-title input").value; 
+
+    const taskTitleInput = task.querySelector(".task-details input[type='text']");
+
+    preview.innerText = taskTitleInput ? taskTitleInput.value.trim() || "Untitled Task" : "Untitled Task";
 
     const confirmButton = modal.querySelector("#confirm");
     confirmButton.dataset.taskId = task.id; 

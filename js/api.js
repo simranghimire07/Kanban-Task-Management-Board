@@ -5,16 +5,15 @@ export const saveTasks = (columns) => {
             const status = column.dataset.status;
             const taskElements = column.querySelectorAll(".task");
             taskElements.forEach(task => {
-             
                 tasks.push({
                     id: task.id,
-                    title: task.querySelector(".task-title input"),  
-                    description: task.querySelector(".task-details textarea"),  
-                    dueDate: task.querySelector(".task-details input[type='date']"), 
-                    status: status,
-                    priority: task.querySelector(".task-details select"), 
-                    assignee: task.querySelector(".task-details input[type='text']"), 
+                    title: task.querySelector(".task-title input")?.value || "",  
+                    description: task.querySelector(".task-details textarea")?.value || "",  
+                    dueDate: task.querySelector(".task-details input[type='date']")?.value || "", 
+                    priority: task.querySelector(".task-details select")?.value || "Low", 
+                    assignee: task.querySelector(".task-details input[type='text']")?.value || "", 
                     createdAt: task.dataset.createdAt,
+                    status: status
                 });
             });
         });
