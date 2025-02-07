@@ -85,22 +85,24 @@ export const createTask = (taskData) => {
 
     task.innerHTML = `
         <div class="task-title">
+            <input type="text" value="${taskData.title}" placeholder="Task title" />
+            <i class="fas fa-ellipsis-v project-options"></i>
+
+        </div>
+        <div class="task-details">
+            <textarea placeholder="Description">${taskData.description}</textarea>
+        </div>
+        
+        <input type="text" value="${taskData.assignee}" placeholder="Assignee to" />
+
+        <hr class="divider" />
+        <div class="task-meta">
             <select class="priority-select">
                 <option value="Low" ${taskData.priority === "Low" ? "selected" : ""}>Low</option>
                 <option value="Medium" ${taskData.priority === "Medium" ? "selected" : ""}>Medium</option>
                 <option value="High" ${taskData.priority === "High" ? "selected" : ""}>High</option>
             </select>
-            <i class="fas fa-ellipsis-v project-options"></i>
-
-        </div>
-        <div class="task-details">
-            <input type="text" value="${taskData.title}" placeholder="Enter task title" />
-            <textarea placeholder="Enter description">${taskData.description}</textarea>
-        </div>
-        <hr class="divider" />
-        <div class="task-meta">
             <input type="date" value="${taskData.dueDate}" />
-            <input type="text" value="${taskData.assignee}" placeholder="Enter assignee" />
         </div>
         <menu>
             <button data-edit><i class="bi bi-pencil-square"></i></button>
