@@ -58,27 +58,30 @@
 }
     
     
-.project-icon {
-        width: 35px;
-        height: 35px;
+svg {
+        width: 30px;
+        height: 30px;
         border-radius: 5px;
-        padding: 5px;
+        padding: 7px;
 }
     
-.project-list li:nth-child(1) .project-icon {
+.project-list li:nth-child(1) svg {
         background-color: white;
+        color: #333;
 }
     
-.project-list li:nth-child(2) .project-icon {
+.project-list li:nth-child(2) svg {
         background-color: #e2faff;
+        color: rgb(125, 125, 225);
  }
     
-.project-list li:nth-child(3) .project-icon {
+.project-list li:nth-child(3) svg {
         background-color: #d9edfe;
  }
     
-.project-list li:nth-child(4) .project-icon {
+.project-list li:nth-child(4) svg {
         background-color: #fce9ff;
+        color: purple;
 }
     
 .project-options {
@@ -221,7 +224,7 @@ button:is(:active, :hover) {
 .column-title {
         display: flex;
         align-items: center;
-        /* justify-content: space-between; */
+        justify-content: space-between;
 }
 
 .column-title::before {
@@ -251,14 +254,15 @@ button:is(:active, :hover) {
       
 .column-title h2 {
         font-size: 1.3rem;
-
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
 }
       
 .column-title h2::after {
         content: attr(data-tasks);
         background: #FFFFFF;
         margin-left: 1rem;
-        margin-right: 7.4rem;
         border-radius: 30%;
         padding: 0 0.25rem;
         color: #666;
@@ -334,17 +338,54 @@ select {
         justify-content: space-between;
         gap: 20px;
 }
-.task .task-title select{
-        border-radius: 35px;
+   
+.task menu {
+        margin-top: 0.875rem;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+}
+      
+.task button {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 1.25rem;
+}
+
+.task-title input{
+        font-size: 20px;
+        font-weight: 600;
+}
+
+.task-details textarea{
+        font-size: 18px;
+        font-weight: 500;
+        opacity: 0.6;
+}
+
+.divider{
+        opacity: 0.3;
+        width: 100%;
+        margin: 15px 0;
+}
+
+.task-meta{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 60px;
+}
+.task .task-meta select{
+        border-radius: 12px;
         font-size: 18px;
         font-weight: 500;
         width: 95px;
         max-width: 100%;
-        height: 30px;
+        height: 28px;
         cursor: pointer;
         text-align: center;
         align-items: center;
-        margin-bottom: 18px;
+        margin-right: 10px;
 }
 .priority-select-low {
         background-color: #d4edda;
@@ -360,55 +401,14 @@ select {
         background-color: #f6c5c9;
         color: #8d222c;
 }
-.task-title .project-options{
+.task-details .project-options{
         font-size: 18px;
 }
-   
-.task menu {
-        margin-top: 0.875rem;
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.5rem;
+.task-details input[type="date"]{
+        width: 50%;
 }
-      
-.task button {
-        width: 1.5rem;
-        height: 1.5rem;
-        font-size: 1.25rem;
-}
-      
-.task-input {
-        outline: none;
-        overflow-wrap: anywhere;
-        padding-left: 2.5rem;
-        margin-top: 10px;
-}
-
-.task-details input{
-        font-size: 20px;
-        font-weight: 600;
-}
-
-.task-details textarea{
-        font-size: 18px;
-        font-weight: 500;
-        opacity: 0.6;
-}
-.task-details input[type="date"]::-webkit-calendar-picker-indicator {
-        display: none;
-}
-
-.divider{
-        opacity: 0.3;
-        width: 100%;
-}
-
-.task-meta{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-}
-input:focus::placeholder {
+input:focus::placeholder,
+textarea:focus::placeholder {
         color: transparent;
 }           
 .confirm-modal[open] {
