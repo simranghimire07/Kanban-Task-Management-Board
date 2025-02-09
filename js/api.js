@@ -1,36 +1,39 @@
 import { createTask , updateTaskCount} from './main.js';
 export const saveTasks = (columns) => {
-        const tasks = [];
-        columns.forEach(column => {
-            const status = column.dataset.status;
-            const taskElements = column.querySelectorAll(".task");
-            taskElements.forEach(task => {
-                tasks.push({
-                    id: task.id,
-                    title: task.querySelector(".task-title input")?.value || "",  
-                    description: task.querySelector(".task-details textarea")?.value || "",  
-                    dueDate: task.querySelector(".task-details input[type='date']")?.value || "", 
-                    priority: task.querySelector(".task-details select")?.value || "Low", 
-                    assignee: task.querySelector(".task-details input[type='text']")?.value || "", 
-                    createdAt: task.dataset.createdAt,
-                    status: status
-                });
+    const tasks = [];
+    columns.forEach(column => {
+        const status = column.dataset.status; 
+        const taskElements = column.querySelectorAll(".task");
+
+        taskElements.forEach(task => {
+            tasks.push({
+                id: task.id,
+                title: task.querySelector(".task-title input")?.value.trim() || "New Task",
+                description: task.querySelector(".task-details textarea")?.value.trim() || "Task description",
+                dueDate: task.querySelector(".task-meta input[type='date']")?.value || new Date().toISOString().split("T")[0],
+                priority: task.querySelector(".task-meta select")?.value || "Low",
+                assignee: task.querySelector("input[placeholder='Assignee to']")?.value.trim() || "",
+                createdAt: task.dataset.createdAt,
+                status: status 
             });
         });
-        localStorage.setItem('todoTasks', JSON.stringify(tasks));
+    });
+
+    localStorage.setItem('todoTasks', JSON.stringify(tasks));
 };
+
     
 export const loadTasks = (columns) => {
-        const storedTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
-    
-        storedTasks.forEach(taskData => {
-            const column = Array.from(columns).find(col => col.dataset.status === taskData.status);
-            if (column) {
-                const taskElement = createTask(taskData);
-                column.querySelector(".tasks").appendChild(taskElement);
-                updateTaskCount(column);
-            }
-        });
+    const storedTasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+
+    storedTasks.forEach(taskData => {
+        const column = [...columns].find(col => col.dataset.status === taskData.status);
+        if (column) {
+            const taskElement = createTask(taskData);
+            column.querySelector(".tasks").appendChild(taskElement);
+            updateTaskCount(column);
+        }
+    });
 };
     
 export const handleDragstart = (event) => {

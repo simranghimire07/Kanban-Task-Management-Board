@@ -86,8 +86,6 @@ export const createTask = (taskData) => {
     task.innerHTML = `
         <div class="task-title">
             <input type="text" value="${taskData.title}" placeholder="Task title" />
-            <i class="fas fa-ellipsis-v project-options"></i>
-
         </div>
         <div class="task-details">
             <textarea placeholder="Description">${taskData.description}</textarea>
@@ -105,7 +103,6 @@ export const createTask = (taskData) => {
             <input type="date" value="${taskData.dueDate}" />
         </div>
         <menu>
-            <button data-edit><i class="bi bi-pencil-square"></i></button>
             <button data-delete><i class="bi bi-trash"></i></button>
         </menu>
     `;
@@ -116,7 +113,6 @@ export const createTask = (taskData) => {
 
     task.addEventListener("dragstart", handleDragstart);
     task.addEventListener("dragend", handleDragend);
-    task.querySelector("[data-edit]").addEventListener("click", () => editTask(task));
     task.querySelector("[data-delete]").addEventListener("click", () => confirmDelete(task));
 
     return task;
@@ -126,15 +122,17 @@ const confirmDelete = (task) => {
     const modal = document.querySelector(".confirm-modal");
     const preview = modal.querySelector(".preview");
 
-    const taskTitleInput = task.querySelector(".task-details input[type='text']");
+    const taskTitleInput = task.querySelector(".task-title input[type='text']");
+    const title = taskTitleInput.value.trim() || "Untitled Task";
 
-    preview.innerText = taskTitleInput ? taskTitleInput.value.trim() || "Untitled Task" : "Untitled Task";
+    preview.innerText = title;
 
     const confirmButton = modal.querySelector("#confirm");
-    confirmButton.dataset.taskId = task.id; 
+    confirmButton.dataset.taskId = task.id;
 
     modal.showModal();
 };
+
 
 const handleDeleteTask = (event) => {
     event.preventDefault();
@@ -169,10 +167,9 @@ const handleTaskMove = () => {
     const columns = document.querySelectorAll('.column');
     columns.forEach(column => {
         column.querySelectorAll('.task').forEach(task => {
-            task.dataset.status = column.dataset.status;
+            task.dataset.status = column.dataset.status; 
         });
     });
 
-    columns.forEach(updateTaskCount);
-    saveTasks(columns);
+    saveTasks(columns); 
 };
