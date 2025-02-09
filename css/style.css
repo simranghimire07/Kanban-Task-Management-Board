@@ -344,6 +344,7 @@ select {
         display: flex;
         justify-content: flex-end;
         gap: 0.5rem;
+        align-items: center;
 }
       
 .task button {

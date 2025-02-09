@@ -32,18 +32,11 @@ const updateSelectColor = (select) => {
     }
 };
 
-
 const addTask = (column) => {
     const tasksContainer = column.querySelector(".tasks");
 
-    const existingBlankTask = [...tasksContainer.children].some(task => {
-        const title = task.querySelector("input[type='text']").value.trim();
-        const description = task.querySelector("textarea").value.trim();
-        return title === "" && description === "";
-    });
-
-    if (existingBlankTask) {
-        alert("Please fill in the existing blank task before adding a new one.");
+    if (column.querySelector(".task[data-new='true']")) {
+        alert("Please fill in and save the existing task before adding a new one.");
         return;
     }
 
@@ -56,32 +49,21 @@ const addTask = (column) => {
         priority: "Low",
         assignee: "",
         createdAt: new Date().toISOString(),
+        isNew: true
     };
 
     const taskElement = createTask(newTaskData);
     tasksContainer.appendChild(taskElement);
-    updateTaskCount(column);
-    saveTasks(document.querySelectorAll(".column"));
-};
-
-const editTask = (task) => {
-    const titleInput = task.querySelector(".task-details input[type='text']");
-    const descriptionTextarea = task.querySelector(".task-details textarea");
-    
-    if (titleInput && descriptionTextarea) {
-        titleInput.removeAttribute("readonly");
-        descriptionTextarea.removeAttribute("readonly");
-        titleInput.focus();
-    }
 };
 
 export const createTask = (taskData) => {
     const task = document.createElement("div");
     task.className = "task";
     task.id = taskData.id;
-    task.draggable = true;
+    task.draggable = false; 
     task.dataset.status = taskData.status;
     task.dataset.createdAt = taskData.createdAt;
+    task.dataset.new = "true"; 
 
     task.innerHTML = `
         <div class="task-title">
@@ -90,9 +72,7 @@ export const createTask = (taskData) => {
         <div class="task-details">
             <textarea placeholder="Description">${taskData.description}</textarea>
         </div>
-        
         <input type="text" value="${taskData.assignee}" placeholder="Assignee to" />
-
         <hr class="divider" />
         <div class="task-meta">
             <select class="priority-select">
@@ -103,6 +83,7 @@ export const createTask = (taskData) => {
             <input type="date" value="${taskData.dueDate}" />
         </div>
         <menu>
+            <button data-save><i class="bi bi-save"></i></button>
             <button data-delete><i class="bi bi-trash"></i></button>
         </menu>
     `;
@@ -111,28 +92,33 @@ export const createTask = (taskData) => {
     updateSelectColor(prioritySelect);
     prioritySelect.addEventListener("change", () => updateSelectColor(prioritySelect));
 
-    task.addEventListener("dragstart", handleDragstart);
-    task.addEventListener("dragend", handleDragend);
-    task.querySelector("[data-delete]").addEventListener("click", () => confirmDelete(task));
+    task.querySelector("[data-save]").addEventListener("click", () => saveTask(task));
+    task.querySelector("[data-delete]").addEventListener("click", () => task.remove());
 
     return task;
 };
 
-const confirmDelete = (task) => {
-    const modal = document.querySelector(".confirm-modal");
-    const preview = modal.querySelector(".preview");
+const saveTask = (task) => {
+    if (!validateTaskFields(task)) {
+        alert("Please fill in all fields before saving.");
+        return;
+    }
 
-    const taskTitleInput = task.querySelector(".task-title input[type='text']");
-    const title = taskTitleInput.value.trim() || "Untitled Task";
+    task.removeAttribute("data-new"); 
+    task.draggable = true; 
 
-    preview.innerText = title;
-
-    const confirmButton = modal.querySelector("#confirm");
-    confirmButton.dataset.taskId = task.id;
-
-    modal.showModal();
+    updateTaskCount(task.closest(".column"));
+    saveTasks(document.querySelectorAll(".column")); 
 };
 
+const validateTaskFields = (task) => {
+    const title = task.querySelector(".task-title input[type='text']").value.trim();
+    const description = task.querySelector(".task-details textarea").value.trim();
+    const dueDate = task.querySelector(".task-meta input[type='date']").value;
+    const assignee = task.querySelector("input[placeholder='Assignee to']").value.trim();
+
+    return title !== "" && description !== "" && dueDate !== "" && assignee !== "";
+};
 
 const handleDeleteTask = (event) => {
     event.preventDefault();
@@ -159,7 +145,7 @@ const removeTask = (taskId) => {
 };
 
 export const updateTaskCount = (column) => {
-    const taskCount = column.querySelector(".tasks").children.length;
+    const taskCount = column.querySelectorAll(".task:not([data-new='true'])").length;
     column.querySelector(".column-title h2").dataset.tasks = taskCount;
 };
 
